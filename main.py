@@ -45,7 +45,9 @@ def whisper_model(sound_file: UploadFile):
     # try to save the file
     try:
         # try to save the uploaded file and save the directory
-        uploaded_file_path = save_file_to_directory(uploaded_file=sound_file)
+        uploaded_file_path = save_file_to_directory(
+            uploaded_file=sound_file, directory="user_audios"
+        )
     except Exception as exc:
         # print the exception
         print(exc)
