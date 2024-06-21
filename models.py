@@ -66,9 +66,7 @@ class Xtts:
             # call the model
             output = replicate.run(
                 ref="""
-                    lucataco/xtts-v2:684bc385
-                    5b37866c0c65add2ff39c78f3
-                    dea3f4ff103a436465326e0f438d55e""",
+                    lucataco/xtts-v2:684bc3855b37866c0c65add2ff39c78f3dea3f4ff103a436465326e0f438d55e""",
                 input=audio_input,
             )
             print(output)
