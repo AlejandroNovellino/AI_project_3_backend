@@ -45,31 +45,25 @@ class Xtts:
     Class for xtts v2
     """
 
-    def __init__(self, speaker_audio) -> None:
-        self.speaker = speaker_audio
+    def __init__(self) -> None:
+        pass
 
-    def run(self, text) -> None:
+    def run(self, text, speaker) -> None:
         """
         run the model
         """
+        audio_input = {
+            "speaker": speaker,
+            "text": text,
+            "language": "en",
+        }
 
-        with open(
-            file=f"static/speakers/{self.speaker}.wav", mode="r", encoding="utf_8"
-        ) as speaker:
-
-            audio_input = {
-                "speaker": speaker,
-                "text": text,
-                "language": "en",
-            }
-
-            # call the model
-            output = replicate.run(
-                ref="""
-                    lucataco/xtts-v2:684bc3855b37866c0c65add2ff39c78f3dea3f4ff103a436465326e0f438d55e""",
-                input=audio_input,
-            )
-            print(output)
+        # call the model
+        output = replicate.run(
+            ref="lucataco/xtts-v2:684bc3855b37866c0c65add2ff39c78f3dea3f4ff103a436465326e0f438d55e",
+            input=audio_input,
+        )
+        print(output)
 
         return output
 
