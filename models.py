@@ -1,15 +1,20 @@
 """
-    Classes to call the Replicate models
+Models wrapper to handle errors
 """
 
-import replicate
-from dotenv import load_dotenv
+from fastapi import HTTPException
+from replicate.exceptions import ReplicateError
 
-# load env variables
-load_dotenv()
+import models_api
+from utils import save_file_to_directory
+
+# create the instances of the classes for calling the models
+fast_whisper = models_api.FastWhisper()
+xtts = models_api.Xtts()
+llama3 = models_api.Llama3()
 
 
-class FastWhisper:
+class FastWhisperWrapper:
     """
     Class for whisper
     """
@@ -17,115 +22,189 @@ class FastWhisper:
     def __init__(self) -> None:
         pass
 
-    def run(self, audio_file) -> None:
+    def run(self, sound_file):
         """
-        run the model
+        Run the model
         """
-        # model input
-        model_input = {
-            "task": "transcribe",
-            "audio": audio_file,
-            "language": "None",
-            "timestamp": "chunk",
-            "batch_size": 64,
-            "diarise_audio": False,
-        }
-        # call the model
-        output = replicate.run(
-            ref="vaibhavs10/incredibly-fast-whisper:3ab86df6c8f54c11309d4d1f930ac292bad43ace52d10c80d87eb258b3c9f79c",
-            input=model_input,
-        )
-        print(output)
+        # print the file name
+        print("Uploaded file name: ", sound_file.filename)
+        # file path
+        uploaded_file_path = ""
 
-        return output
+        # try to save the file
+        try:
+            # try to save the uploaded file and save the directory
+            uploaded_file_path = save_file_to_directory(
+                uploaded_file=sound_file, directory="user_audios"
+            )
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Error uploading the file"
+            ) from exc
+        else:
+            print("Upload file name: ", uploaded_file_path)
+
+        try:
+            # open the file
+            with open(uploaded_file_path, "rb") as audio_file:
+                # call the model
+                fast_whisper_output = fast_whisper.run(audio_file=audio_file)
+                # print the output
+                print("Model output: ", fast_whisper_output)
+            # return the text
+            return {"text": fast_whisper_output}
+        except ReplicateError as e:
+            print(f"An error occurred with the model: {e.status} - {e.detail}")
+            raise HTTPException(
+                status_code=500, detail={"status": e.status, "detail": e.detail}
+            ) from e
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Something bad happened in our end"
+            ) from exc
 
 
-class Xtts:
+class XttsWrapper:
     """
-    Class for xtts v2
+    Class for xtts
     """
 
     def __init__(self) -> None:
         pass
 
-    def run(self, text, speaker) -> None:
+    def run(self, sound_file, text_to_speech):
         """
-        run the model
+        Run the model
         """
-        audio_input = {
-            "speaker": speaker,
-            "text": text,
-            "language": "en",
-        }
+        # print the text to convert to speech
+        print("Text to transform to speech:", text_to_speech)
+        # print the file name
+        print("Uploaded file name: ", sound_file.filename)
+        # file path
+        uploaded_file_path = ""
 
-        # call the model
-        output = replicate.run(
-            ref="lucataco/xtts-v2:684bc3855b37866c0c65add2ff39c78f3dea3f4ff103a436465326e0f438d55e",
-            input=audio_input,
-        )
-        print(output)
+        # try to save the file
+        try:
+            # try to save the uploaded file and save the directory
+            uploaded_file_path = save_file_to_directory(
+                uploaded_file=sound_file, directory="speakers"
+            )
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Error uploading the speaker file"
+            ) from exc
+        else:
+            print("Upload file name: ", uploaded_file_path)
 
-        return output
+        try:
+            # open the file
+            with open(uploaded_file_path, "rb") as speaker_file:
+                # call the model
+                xtts_whisper_output = xtts.run(
+                    text=text_to_speech, speaker=speaker_file
+                )
+                # print the output
+                print("Model output: ", xtts_whisper_output)
+            # return the text
+            return {"speech": xtts_whisper_output}
+        except ReplicateError as e:
+            print(f"An error occurred with the model: {e.status} - {e.detail}")
+            raise HTTPException(
+                status_code=500, detail={"status": e.status, "detail": e.detail}
+            ) from e
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Something bad happened in our end"
+            ) from exc
+
+    def run_with_speaker_as_string(self, sound_file_name, text_to_speech):
+        """
+        Run the model
+        """
+        # print the text to convert to speech
+        print("Text to transform to speech:", text_to_speech)
+        # print the file name
+        print("Speaker name: ", sound_file_name)
+
+        try:
+            # open the file
+            with open(f"./static/speakers/{sound_file_name}", "rb") as speaker_file:
+                # call the model
+                xtts_whisper_output = xtts.run(
+                    text=text_to_speech, speaker=speaker_file
+                )
+                # print the output
+                print("Model output: ", xtts_whisper_output)
+            # return the text
+            return {"speech": xtts_whisper_output}
+        except ReplicateError as e:
+            print(f"An error occurred with the model: {e.status} - {e.detail}")
+            raise HTTPException(
+                status_code=500, detail={"status": e.status, "detail": e.detail}
+            ) from e
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Something bad happened in our end"
+            ) from exc
 
 
-# this class should make his return as a stream for processing quickly
-class Llama3:
+class Llama3Wrapper:
     """
-    Class for llama 3 8b instruct
+    Class for xtts
     """
 
-    def __init__(self, replicate_instance) -> None:
+    def __init__(self) -> None:
         pass
 
-    def run(
-        self,
-        user_prompt,
-        system_prompt,
-        max_tokens=512,
-        min_tokens=-1,
-        temperature=0.7,
-        top_p=0.95,
-        top_k=0,
-        stop_sequences="<|end_of_text|>,<|eot_id|>",
-        length_penalty=1,
-        presence_penalty=0,
-        seed=42,
-        prompt_template="""
-            <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-
-            {system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>
-
-            {prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-            """,
-        log_performance_metrics=False,
-    ) -> None:
+    def run(self, user_prompt):
         """
-        run the model
+        Run the model
         """
+        # print the text to convert to speech
+        print("Text to transform to respond:", user_prompt)
 
-        model_input = {
-            "prompt": user_prompt,
-            "system_prompt": system_prompt,
-            "max_tokens": max_tokens,
-            "min_tokens": min_tokens,
-            "temperature": temperature,
-            "top_p": top_p,
-            "top_k": top_k,
-            "stop_sequences": stop_sequences,
-            "length_penalty": length_penalty,
-            "presence_penalty": presence_penalty,
-            "seed": seed,
-            "prompt_template": prompt_template,
-            "log_performance_metrics": log_performance_metrics,
-        }
-        # output list
-        output = []
-
-        for event in replicate.stream(
-            ref="meta/meta-llama-3-8b-instruct",
-            input=model_input,
-        ):
-            print(event, end="")
-            output.append(event)
-
-        return output
+        try:
+            # call the model
+            llama3_output = llama3.run(
+                user_prompt=user_prompt,
+                system_prompt="Please respond like a health care assistant",
+            )
+            # print the output
+            print("Model output: ", llama3_output)
+            # modify the output
+            completed_respond = ""
+            for respond in llama3_output:
+                if respond.data == "{}":
+                    continue
+                completed_respond += respond.data
+            # print the respond to return
+            print(completed_respond)
+            # return the text
+            return {"respond": completed_respond}
+        except ReplicateError as e:
+            print(f"An error occurred with the model: {e.status} - {e.detail}")
+            raise HTTPException(
+                status_code=500, detail={"status": e.status, "detail": e.detail}
+            ) from e
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Something bad happened in our end"
+            ) from exc
