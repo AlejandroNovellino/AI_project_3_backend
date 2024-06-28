@@ -48,6 +48,6 @@ def vita_ai(user_prompt: UploadFile):
     # call llama3
     output = llama3.run(output)["respond"]
     # from text to speech
-    output = xtts.run_with_speaker_as_string("ScarlettSpeaker2.mp3", output)
+    output = xtts.run_with_speaker_as_string("MorganSpeaker2.mp3", output)
     # return the final output
     return {"respond": output["speech"]}

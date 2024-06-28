@@ -182,7 +182,7 @@ class Llama3Wrapper:
             # call the model
             llama3_output = llama3.run(
                 user_prompt=user_prompt,
-                system_prompt="Please respond like a health care assistant",
+                system_prompt="Please respond like a english professor",
             )
             # print the output
             print("Model output: ", llama3_output)
