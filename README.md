@@ -8,24 +8,22 @@ To run the server use `fastapi dev main.py`
 
 # Modelos
 
-## XTTS- v2 (Clonación de voz, pasa de texto a voz)
+## Suno ia (pasa de texto a voz)
 
-### Características 
-- Clonación de voz.
-- Clonación de voz entre idiomas.
-- Generación de voz multilingüe.
-- Frecuencia de muestreo de 24 kHz.
-- Inferencia de transmisión con latencia <200 ms. 
-- Clonación de voz mejorada.
-- Las voces se pueden clonar con un solo archivo de audio o con varios archivos de audio, sin ningún efecto en el tiempo de ejecución.
-- 2 nuevos idiomas: húngaro y coreano.
+Bark is a transformer-based text-to-audio model created by Suno. Bark can generate highly realistic, multilingual speech as well as other audio - including music, background noise and simple sound effects. The model can also produce nonverbal communications like laughing, sighing and crying. To support the research community, we are providing access to pretrained model checkpoints ready for inference.
 
+### Arquitectura
+Bark es una serie de tres modelos de transformadores que convierten texto en audio.
 
-![](Img/TTS%20.png)
+- Texto a tokens semánticos
+- De semántica a tokens gruesos
+- Fichas gruesas a finas
 
-Detalle de su documentacion https://docs.coqui.ai/en/latest/models/xtts.html#features
+![](Img/suno.png)
 
-Link modelo en replicate: https://replicate.com/lucataco/xtts-v2
+Detalle de su documentacion https://github.com/chenxwh/bark/blob/main/model-card.md
+
+Link modelo en replicate: https://replicate.com/suno-ai/bark?prediction=5dhp9mcyvsrga0cgd8mbzsneew
 
 ## Fast whisper (Transcribe audio a texto) -> Seq2Seq
 
