@@ -20,8 +20,13 @@ To run the server use `fastapi dev main.py`
 - Las voces se pueden clonar con un solo archivo de audio o con varios archivos de audio, sin ningún efecto en el tiempo de ejecución.
 - 2 nuevos idiomas: húngaro y coreano.
 
+
+![](Img/TTS.png) 
+
 Detalle de su documentacion https://docs.coqui.ai/en/latest/models/xtts.html#features
-Link modelo en replicate: 
+
+Link modelo en replicate: https://replicate.com/lucataco/xtts-v2
+
 ## Fast whisper (Transcribe audio a texto) -> Seq2Seq
 
 Whisper es un modelo de codificador-decodificador basado en Transformer, también conocido como modelo de secuencia a secuencia . Se entrenó con 1 millón de horas de audio débilmente etiquetado y 4 millones de horas de audio pseudoetiquetado recopilados con Whisper large-v2.
@@ -39,4 +44,5 @@ Link modelo en replicate: https://replicate.com/vaibhavs10/incredibly-fast-whisp
 Llama 3 es un modelo de lenguaje autorregresivo que utiliza una arquitectura de transformador optimizada. Las versiones optimizadas utilizan un ajuste fino supervisado (SFT) y aprendizaje de refuerzo con retroalimentación humana (RLHF) para alinearse con las preferencias humanas de ayuda y seguridad.
 
 Detalle de su documentación: https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md
+
 Link modelo en replictae: https://replicate.com/meta/meta-llama-3-8b-instruct
