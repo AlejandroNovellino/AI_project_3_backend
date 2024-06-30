@@ -21,7 +21,7 @@ To run the server use `fastapi dev main.py`
 - 2 nuevos idiomas: húngaro y coreano.
 
 
-![](Img/TTS.png) 
+![](Img/TTS%20.png)
 
 Detalle de su documentacion https://docs.coqui.ai/en/latest/models/xtts.html#features
 
@@ -42,6 +42,8 @@ Link modelo en replicate: https://replicate.com/vaibhavs10/incredibly-fast-whisp
 ## Meta-llama-3-8b-instruct (genera la respuesta las preguntas que haga el usuario)
 
 Llama 3 es un modelo de lenguaje autorregresivo que utiliza una arquitectura de transformador optimizada. Las versiones optimizadas utilizan un ajuste fino supervisado (SFT) y aprendizaje de refuerzo con retroalimentación humana (RLHF) para alinearse con las preferencias humanas de ayuda y seguridad.
+
+![](Img/llama3.png) 
 
 Detalle de su documentación: https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md
 
