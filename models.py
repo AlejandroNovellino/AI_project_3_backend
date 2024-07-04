@@ -171,7 +171,7 @@ class Llama3Wrapper:
     def __init__(self) -> None:
         pass
 
-    def run(self, user_prompt):
+    def run(self, user_prompt, system_prompt):
         """
         Run the model
         """
@@ -182,7 +182,7 @@ class Llama3Wrapper:
             # call the model
             llama3_output = llama3.run(
                 user_prompt=user_prompt,
-                system_prompt="Please respond like a english professor",
+                system_prompt=system_prompt,
             )
             # print the output
             print("Model output: ", llama3_output)
