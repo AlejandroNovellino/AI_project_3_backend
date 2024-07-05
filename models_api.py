@@ -40,27 +40,31 @@ class FastWhisper:
         return output
 
 
-class Xtts:
+class Suno:
     """
-    Class for xtts v2
+    Class for suno-ai
     """
 
     def __init__(self) -> None:
         pass
 
-    def run(self, text, speaker) -> None:
+    def run(self, text) -> None:
         """
         run the model
         """
+        ## Es posible quitar lo de history_prompt y el modelo automaticamente segun el prompt que pongas reconoce el idioma y le pone un audio de avuerdo al idioma
+        print(text)
         audio_input = {
-            "speaker": speaker,
-            "text": text,
-            "language": "en",
+            "prompt": text,
+            "text_temp": 0.7,
+            "output_full": False,
+            "waveform_temp": 0.7,
+            "history_prompt": "announcer"
         }
 
         # call the model
         output = replicate.run(
-            ref="lucataco/xtts-v2:684bc3855b37866c0c65add2ff39c78f3dea3f4ff103a436465326e0f438d55e",
+            "suno-ai/bark:b76242b40d67c76ab6742e987628a2a9ac019e11d56ab96c4e91ce03b79b2787",
             input=audio_input,
         )
         print(output)

@@ -10,7 +10,7 @@ from utils import save_file_to_directory
 
 # create the instances of the classes for calling the models
 fast_whisper = models_api.FastWhisper()
-xtts = models_api.Xtts()
+suno = models_api.Suno()
 llama3 = models_api.Llama3()
 
 
@@ -69,53 +69,31 @@ class FastWhisperWrapper:
                 status_code=500, detail="Something bad happened in our end"
             ) from exc
 
-
-class XttsWrapper:
+#terminar de modificar
+class SunoWrapper:
     """
-    Class for xtts
+    Class for suno
     """
 
     def __init__(self) -> None:
         pass
 
-    def run(self, sound_file, text_to_speech):
+    def run(self, text_to_speech):
         """
         Run the model
         """
         # print the text to convert to speech
         print("Text to transform to speech:", text_to_speech)
-        # print the file name
-        print("Uploaded file name: ", sound_file.filename)
-        # file path
-        uploaded_file_path = ""
-
-        # try to save the file
+       
         try:
-            # try to save the uploaded file and save the directory
-            uploaded_file_path = save_file_to_directory(
-                uploaded_file=sound_file, directory="speakers"
+            # call the model
+            suno_whisper_output = suno.run(
+                text=text_to_speech
             )
-        except Exception as exc:
-            # print the exception
-            print(exc)
-            # if something failed raise a internal error
-            raise HTTPException(
-                status_code=500, detail="Error uploading the speaker file"
-            ) from exc
-        else:
-            print("Upload file name: ", uploaded_file_path)
-
-        try:
-            # open the file
-            with open(uploaded_file_path, "rb") as speaker_file:
-                # call the model
-                xtts_whisper_output = xtts.run(
-                    text=text_to_speech, speaker=speaker_file
-                )
-                # print the output
-                print("Model output: ", xtts_whisper_output)
+            # print the output
+            print("Model output: ", suno_whisper_output)
             # return the text
-            return {"speech": xtts_whisper_output}
+            return {"speech": suno_whisper_output}
         except ReplicateError as e:
             print(f"An error occurred with the model: {e.status} - {e.detail}")
             raise HTTPException(
@@ -128,27 +106,24 @@ class XttsWrapper:
             raise HTTPException(
                 status_code=500, detail="Something bad happened in our end"
             ) from exc
-
-    def run_with_speaker_as_string(self, sound_file_name, text_to_speech):
+        
+#Revisar
+    def run_with_speaker_as_string(self, text_to_speech):
         """
         Run the model
         """
         # print the text to convert to speech
         print("Text to transform to speech:", text_to_speech)
-        # print the file name
-        print("Speaker name: ", sound_file_name)
-
+    
         try:
-            # open the file
-            with open(f"./static/speakers/{sound_file_name}", "rb") as speaker_file:
-                # call the model
-                xtts_whisper_output = xtts.run(
-                    text=text_to_speech, speaker=speaker_file
-                )
-                # print the output
-                print("Model output: ", xtts_whisper_output)
+    
+            suno_whisper_output = suno.run(
+                text=text_to_speech
+            )
+            # print the output
+            print("Model output: ", suno_whisper_output)
             # return the text
-            return {"speech": xtts_whisper_output}
+            return {"speech": suno_whisper_output}
         except ReplicateError as e:
             print(f"An error occurred with the model: {e.status} - {e.detail}")
             raise HTTPException(
@@ -165,7 +140,7 @@ class XttsWrapper:
 
 class Llama3Wrapper:
     """
-    Class for xtts
+    Class for llama
     """
 
     def __init__(self) -> None:

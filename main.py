@@ -9,7 +9,7 @@ import models
 
 # create the instances of the classes for calling the models
 fast_whisper = models.FastWhisperWrapper()
-xtts = models.XttsWrapper()
+suno = models.SunoWrapper()
 llama3 = models.Llama3Wrapper()
 
 # system prompt fot llama3
@@ -43,13 +43,13 @@ def whisper_model(sound_file: UploadFile):
     """
     return fast_whisper.run(sound_file)
 
-
-@app.post("/xtts/")
-def xtts_model(sound_file: UploadFile, text_to_speech: str):
+#Revisar y probar
+@app.post("/suno/") 
+def suno_model(text_to_speech: str):
     """
-    Xtts endpoint
+    suno endpoint
     """
-    return xtts.run(sound_file, text_to_speech)
+    return suno.run(text_to_speech)
 
 
 @app.post("/llama/")
@@ -74,6 +74,6 @@ def atom_ai(user_prompt: UploadFile):
     # call llama3
     output = llama3.run(output, system_prompt=SYSTEM_PROMPT)["respond"]
     # from text to speech
-    output = xtts.run_with_speaker_as_string("MorganSpeaker2.mp3", output)
+    output = suno.run_with_speaker_as_string(output)
     # return the final output
     return {"response": output["speech"]}
