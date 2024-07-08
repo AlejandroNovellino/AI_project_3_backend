@@ -2,10 +2,11 @@
     API
 """
 
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.responses import FileResponse
 import models
+import os
 
 # create the instances of the classes for calling the models
 fast_whisper = models.FastWhisperWrapper()
@@ -42,7 +43,7 @@ def whisper_model(sound_file: UploadFile):
     Whisper endpoint
     """
     return fast_whisper.run(sound_file)
-
+''''
 #Revisar y probar
 @app.post("/suno/") 
 def suno_model(text_to_speech: str):
@@ -50,6 +51,14 @@ def suno_model(text_to_speech: str):
     suno endpoint
     """
     return suno.run(text_to_speech)
+'''
+
+@app.post("/suno/")
+def suno_model(text_to_speech: str, request: Request):
+    result = suno.run(text_to_speech)
+    base_url = str(request.base_url)
+    full_url = f"{base_url.rstrip('/')}{result['speech']}"
+    return {"speech": full_url}
 
 
 @app.post("/llama/")
@@ -77,3 +86,12 @@ def atom_ai(user_prompt: UploadFile):
     output = suno.run_with_speaker_as_string(output)
     # return the final output
     return {"response": output["speech"]}
+
+
+@app.get("/audio/{filename}")
+def get_audio(filename: str):
+    file_path = os.path.join("downloads", filename)
+    if os.path.exists(file_path):
+        return FileResponse(path=file_path, media_type='audio/wav', filename=filename, headers={"Content-Disposition": "inline"})
+    else:
+        return {"error": "File not found"}

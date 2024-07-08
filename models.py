@@ -140,62 +140,35 @@ class SunoWrapperOG:
             ) from exc
 
 class SunoWrapper:
-    """
-    Class for suno
-    """
-
     def __init__(self) -> None:
         pass
 
     def run(self, text_to_speech):
-        """
-        Run the model
-        """
-        # Print the text to convert to speech
         print("Text to transform to speech:", text_to_speech)
         
-        # Split text into smaller parts
-        text_parts = self.split_text(text_to_speech, max_length=150)  # Adjust max_length as needed
+        text_parts = self.split_text(text_to_speech, max_length=150)
         audio_segments = []
         
         try:
             for part in text_parts:
-                # Call the model for each part
-                suno_whisper_output = suno.run(
-                    text=part
-                )
-                # Download the audio file from the URL provided in the output
+                suno_whisper_output = suno.run(text=part)
                 audio_url = suno_whisper_output['audio_out']
                 audio_data = requests.get(audio_url).content
                 audio_segments.append(BytesIO(audio_data))
             
-            # Concatenate audio segments
             combined_audio = self.concatenate_audios(audio_segments)
-            
-            # Save combined audio to a file and get the file path
             combined_audio_path = self.save_audio_to_file(combined_audio, "combined_audio.wav")
             
-            # Print the output
             print("Model output: ", combined_audio_path)
-            # Return the concatenated outputs
             return {"speech": f"/audio/{os.path.basename(combined_audio_path)}"}
         except ReplicateError as e:
             print(f"An error occurred with the model: {e.status} - {e.detail}")
-            raise HTTPException(
-                status_code=500, detail={"status": e.status, "detail": e.detail}
-            ) from e
+            raise HTTPException(status_code=500, detail={"status": e.status, "detail": e.detail}) from e
         except Exception as exc:
-            # Print the exception
             print(exc)
-            # If something failed, raise an internal error
-            raise HTTPException(
-                status_code=500, detail="Something bad happened in our end"
-            ) from exc
+            raise HTTPException(status_code=500, detail="Something bad happened in our end") from exc
 
     def split_text(self, text, max_length):
-        """
-        Split text into parts of max_length
-        """
         words = text.split()
         parts = []
         part = []
@@ -213,9 +186,6 @@ class SunoWrapper:
         return parts
 
     def concatenate_audios(self, audio_segments):
-        """
-        Concatenate multiple audio segments into one
-        """
         combined_audio = AudioSegment.empty()
         for segment in audio_segments:
             audio = AudioSegment.from_file(segment, format="wav")
@@ -223,9 +193,6 @@ class SunoWrapper:
         return combined_audio
 
     def save_audio_to_file(self, combined_audio, filename):
-        """
-        Save the combined audio to a file and return the file path
-        """
         downloads_path = os.path.join(os.getcwd(), "downloads")
         os.makedirs(downloads_path, exist_ok=True)
         combined_audio_path = os.path.join(downloads_path, filename)
