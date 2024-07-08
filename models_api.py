@@ -48,7 +48,11 @@ class Xtts:
     def __init__(self) -> None:
         pass
 
-    def run(self, text, speaker) -> None:
+    def run(
+        self,
+        text,
+        speaker="https://replicate.delivery/pbxt/Jt79w0xsT64R1JsiJ0LQRL8UcWspg5J4RFrU6YwEKpOT1ukS/male.wav",
+    ) -> None:
         """
         run the model
         """

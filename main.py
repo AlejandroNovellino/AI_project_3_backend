@@ -52,6 +52,14 @@ def xtts_model(sound_file: UploadFile, text_to_speech: str):
     return xtts.run(sound_file, text_to_speech)
 
 
+@app.post("/xtts-sample-speaker/")
+def xtts_model_width_sample_speaker(text_to_speech: str):
+    """
+    Xtts endpoint with sample speaker
+    """
+    return xtts.run_with_sample_speaker(text_to_speech)
+
+
 @app.post("/llama/")
 def llama_model(user_prompt: str):
     """
@@ -74,6 +82,6 @@ def atom_ai(user_prompt: UploadFile):
     # call llama3
     output = llama3.run(output, system_prompt=SYSTEM_PROMPT)["respond"]
     # from text to speech
-    output = xtts.run_with_speaker_as_string("MorganSpeaker2.mp3", output)
+    output = xtts.run_with_sample_speaker(output)
     # return the final output
     return {"response": output["speech"]}

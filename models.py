@@ -162,6 +162,33 @@ class XttsWrapper:
                 status_code=500, detail="Something bad happened in our end"
             ) from exc
 
+    def run_with_sample_speaker(self, text_to_speech):
+        """
+        Run the model
+        """
+        # print the text to convert to speech
+        print("Text to transform to speech:", text_to_speech)
+
+        try:
+            # call the model
+            xtts_output = xtts.run(text=text_to_speech)
+            # print the output
+            print("Model output: ", xtts_output)
+            # return the text
+            return {"speech": xtts_output}
+        except ReplicateError as e:
+            print(f"An error occurred with the model: {e.status} - {e.detail}")
+            raise HTTPException(
+                status_code=500, detail={"status": e.status, "detail": e.detail}
+            ) from e
+        except Exception as exc:
+            # print the exception
+            print(exc)
+            # if something failed raise a internal error
+            raise HTTPException(
+                status_code=500, detail="Something bad happened in our end"
+            ) from exc
+
 
 class Llama3Wrapper:
     """
