@@ -89,6 +89,7 @@ def atom_ai(user_prompt: UploadFile, request: Request):
     
     # return the final output
     return {
+        "input_text": outputWhisper,
         "response_text": outputLlama,
         "speech_url": url_audio_suno
     }
