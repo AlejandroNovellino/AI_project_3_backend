@@ -32,8 +32,11 @@ Whisper es un modelo de codificador-decodificador basado en Transformer, tambié
 ![](Img/Whisper.png) 
 
 Detalle de su documentacion:
+
 https://huggingface.co/openai/whisper-large-v3
+
 https://github.com/openai/whisper
+https://cdn.openai.com/papers/whisper.pdf
 
 Link modelo en replicate: https://replicate.com/vaibhavs10/incredibly-fast-whisper
 
