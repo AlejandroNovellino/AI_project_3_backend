@@ -68,8 +68,8 @@ def llama_model(user_prompt: str):
     return llama3.run(user_prompt, system_prompt=SYSTEM_PROMPT)
 
 
-@app.post("/atom-ai/")
-def atom_ai(user_prompt: UploadFile):
+@app.post("/atom-ai/custom-voice/")
+def atom_ai_custom_voice(user_prompt: UploadFile):
     """
     Llama endpoint
     """
@@ -80,8 +80,27 @@ def atom_ai(user_prompt: UploadFile):
     # from speech to text
     output = fast_whisper.run(user_prompt)["text"]["text"]
     # call llama3
-    output = llama3.run(output, system_prompt=SYSTEM_PROMPT)["respond"]
+    text_output = llama3.run(output, system_prompt=SYSTEM_PROMPT)["respond"]
     # from text to speech
-    output = xtts.run_with_sample_speaker(output)
+    output = xtts.run_with_custom_speaker("MorganSpeaker2.mp3", text_output)
     # return the final output
-    return {"response": output["speech"]}
+    return {"response_text": text_output, "speech_url": output["speech"]}
+
+
+@app.post("/atom-ai/sample-voice/")
+def atom_ai_sample_voice(user_prompt: UploadFile):
+    """
+    Llama endpoint
+    """
+    print("What comes from front")
+    print(user_prompt)
+
+    # return {}
+    # from speech to text
+    output = fast_whisper.run(user_prompt)["text"]["text"]
+    # call llama3
+    text_output = llama3.run(output, system_prompt=SYSTEM_PROMPT)["respond"]
+    # from text to speech
+    output = xtts.run_with_sample_speaker(text_output)
+    # return the final output
+    return {"response_text": text_output, "speech_url": output["speech"]}

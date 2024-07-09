@@ -129,9 +129,9 @@ class XttsWrapper:
                 status_code=500, detail="Something bad happened in our end"
             ) from exc
 
-    def run_with_speaker_as_string(self, sound_file_name, text_to_speech):
+    def run_with_custom_speaker(self, sound_file_name, text_to_speech):
         """
-        Run the model
+        Run the model with a custom speaker
         """
         # print the text to convert to speech
         print("Text to transform to speech:", text_to_speech)
@@ -164,7 +164,7 @@ class XttsWrapper:
 
     def run_with_sample_speaker(self, text_to_speech):
         """
-        Run the model
+        Run the model with the sample speaker
         """
         # print the text to convert to speech
         print("Text to transform to speech:", text_to_speech)
